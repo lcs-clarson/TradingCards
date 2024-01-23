@@ -16,60 +16,71 @@ struct HockeyCard: View {
     var body: some View {
         VStack {
             if showDetails {
-                Image(imageName)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(height: 200)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(LinearGradient(gradient: Gradient(colors: teamColors), startPoint: .leading, endPoint: .trailing), lineWidth: 20)
-                    )
+                ScrollView {
+                    Image(imageName)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 200)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(LinearGradient(gradient: Gradient(colors: teamColors), startPoint: .leading, endPoint: .trailing), lineWidth: 20)
+                        )
 
-                Text(playerName)
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .padding()
-
-                Text("Stats: \(stats)")
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
-
-                VStack(alignment: .leading) {
-                    Text("Achievements:")
-                        .font(.headline)
-                        .padding(.top, 4)
-
-                    ForEach(achievements, id: \.title) { achievement in
-                        Text("\(achievement.title): \(achievement.description)")
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Player:")
+                            .font(.headline)
                             .foregroundColor(.gray)
-                            .padding(.leading, 10)
+                        Text(playerName)
+                            .font(.title)
+                            .fontWeight(.bold)
+
+                        Text("Style:")
+                            .font(.headline)
+                            .foregroundColor(.gray)
+                        Text("Powerful forward with a knack for scoring goals.")
+                            .font(.body)
+                            .foregroundColor(.black)
+
+                        Text("Stats:")
+                            .font(.headline)
+                            .foregroundColor(.gray)
+                        Text(stats)
+                            .font(.body)
+                            .foregroundColor(.black)
+
+                        Text("Achievements:")
+                            .font(.headline)
+                            .foregroundColor(.gray)
+
+                        ForEach(achievements, id: \.title) { achievement in
+                            Text("\(achievement.title): \(achievement.description)")
+                                .foregroundColor(.gray)
+                        }
+
+                        // Add additional content if needed
                     }
+                    .padding()
                 }
             } else {
                 Text(playerName)
                     .font(.title)
                     .fontWeight(.bold)
+                    .foregroundColor(.white)
                     .padding()
-                    .foregroundColor(Color.white) // Set initial text color
-
+                    .background(
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(LinearGradient(gradient: Gradient(colors: teamColors), startPoint: .leading, endPoint: .trailing))
+                            .frame(height: 200)
+                    )
+                    .cornerRadius(10)
+                    .shadow(radius: 5)
             }
         }
-        .padding()
         .onTapGesture {
             withAnimation {
                 showDetails.toggle()
             }
         }
-        .background(
-            ZStack {
-                if !showDetails {
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(LinearGradient(gradient: Gradient(colors: teamColors), startPoint: .leading, endPoint: .trailing))
-                        .frame(height: 200)
-                }
-            }
-        )
-        .cornerRadius(10)
     }
 }
 
@@ -90,9 +101,23 @@ struct PlayerDetailView: View {
 }
 
 struct ContentView: View {
+    @State private var showWelcomeText = true
+
     var body: some View {
         NavigationView {
             VStack {
+                if showWelcomeText {
+                    Text("Welcome to Hockey Stars")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .padding()
+                        .onTapGesture {
+                            withAnimation {
+                                showWelcomeText.toggle()
+                            }
+                        }
+                }
+
                 NavigationLink(destination: PlayerDetailView(playerName: "Alex Ovechkin", imageName: "Image", teamColors: [.red, .white], stats: "Goals: 700, Assists: 500", achievements: [Achievement(title: "Stanley Cups", description: "3"), Achievement(title: "MVP Awards", description: "5")])) {
                     HockeyCard(playerName: "Alex Ovechkin", imageName: "Image", teamColors: [.red, .white], stats: "Goals: 700, Assists: 500", achievements: [Achievement(title: "Stanley Cups", description: "3"), Achievement(title: "MVP Awards", description: "5")])
                 }
@@ -105,7 +130,7 @@ struct ContentView: View {
                     HockeyCard(playerName: "Connor McDavid", imageName: "Image 1", teamColors: [.blue, .orange], stats: "Goals: 300, Assists: 400", achievements: [Achievement(title: "Art Ross Trophies", description: "2"), Achievement(title: "Hart Trophies", description: "1")])
                 }
             }
-            .navigationTitle("Hockey Cards")
+            .navigationTitle("Hockey Stars")
             .font(.title)
             .foregroundColor(.black)
         }
