@@ -13,7 +13,6 @@ struct HockeyCard: View {
     var achievements: [Achievement]
     @Binding var selectedPlayer: String?
 
-    // Include the playerFacts function in the HockeyCard scope
     func playerFacts(playerName: String) -> String {
         switch playerName {
         case "Alex Ovechkin":
@@ -31,59 +30,59 @@ struct HockeyCard: View {
         VStack {
             if selectedPlayer == playerName {
                 ScrollView {
-                    Image(imageName)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(height: 200)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(LinearGradient(gradient: Gradient(colors: teamColors), startPoint: .leading, endPoint: .trailing), lineWidth: 20)
-                        )
+                    VStack {
+                        Image(imageName)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height: 200)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(LinearGradient(gradient: Gradient(colors: teamColors), startPoint: .leading, endPoint: .trailing), lineWidth: 20)
+                            )
 
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Player:")
-                            .font(.headline)
-                            .foregroundColor(.gray)
-                        Text(playerName)
-                            .font(.title)
-                            .fontWeight(.bold)
-
-                        Text("Style:")
-                            .font(.headline)
-                            .foregroundColor(.gray)
-                        Text("Powerful forward with a knack for scoring goals. \(playerFacts(playerName: playerName))")
-                            .font(.body)
-                            .foregroundColor(.black)
-
-                        Text("Stats:")
-                            .font(.headline)
-                            .foregroundColor(.gray)
-                        Text(stats)
-                            .font(.body)
-                            .foregroundColor(.black)
-
-                        Text("Achievements:")
-                            .font(.headline)
-                            .foregroundColor(.gray)
-
-                        ForEach(achievements, id: \.title) { achievement in
-                            Text("\(achievement.title): \(achievement.description)")
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("Player:")
+                                .font(.headline)
                                 .foregroundColor(.gray)
+                            Text(playerName)
+                                .font(.title)
+                                .fontWeight(.bold)
+
+                            Text("Stats:")
+                                .font(.headline)
+                                .foregroundColor(.gray)
+                            Text(stats)
+                                .font(.body)
+                                .foregroundColor(.black)
+
+                            Text("Achievements:")
+                                .font(.headline)
+                                .foregroundColor(.gray)
+
+                            ForEach(achievements, id: \.title) { achievement in
+                                Text("\(achievement.title): \(achievement.description)")
+                                    .foregroundColor(.gray)
+                            }
+                        }
+                        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(LinearGradient(gradient: Gradient(colors: teamColors), startPoint: .leading, endPoint: .trailing))
+                                .frame(height: 200)
+                        )
+                        .cornerRadius(10)
+                        .shadow(radius: 5)
+                        .onTapGesture {
+                            withAnimation {
+                                selectedPlayer = nil
+                            }
                         }
                     }
-                    .padding()
-                }
-                .background(
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(LinearGradient(gradient: Gradient(colors: teamColors), startPoint: .leading, endPoint: .trailing))
-                        .frame(height: 200)
-                )
-                .cornerRadius(10)
-                .shadow(radius: 5)
-                .onTapGesture {
-                    withAnimation {
-                        selectedPlayer = nil
-                    }
+
+                    Text(playerFacts(playerName: playerName))
+                        .foregroundColor(.black)
+                        .padding()
+                        .transition(.opacity)
                 }
             } else {
                 Text(playerName)
@@ -105,6 +104,7 @@ struct HockeyCard: View {
                     }
             }
         }
+        .padding()
     }
 }
 
@@ -130,13 +130,6 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             VStack {
-                if selectedPlayer == nil {
-                    Text("Welcome to Hockey Stars")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .padding()
-                }
-
                 NavigationLink(destination: PlayerDetailView(playerName: "Alex Ovechkin", imageName: "Image", teamColors: [.red, .white], stats: "Goals: 700, Assists: 500", achievements: [Achievement(title: "Stanley Cups", description: "3"), Achievement(title: "MVP Awards", description: "5")])) {
                     HockeyCard(playerName: "Alex Ovechkin", imageName: "Image", teamColors: [.red, .white], stats: "Goals: 700, Assists: 500", achievements: [Achievement(title: "Stanley Cups", description: "3"), Achievement(title: "MVP Awards", description: "5")], selectedPlayer: $selectedPlayer)
                 }
@@ -152,11 +145,6 @@ struct ContentView: View {
             .navigationTitle("Hockey Stars")
             .font(.title)
             .foregroundColor(.black)
-            .background(
-                LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .top, endPoint: .bottom)
-                    .opacity(selectedPlayer == nil ? 1.0 : 0.0)
-                    .ignoresSafeArea()
-            )
         }
     }
 }
