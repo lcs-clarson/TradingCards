@@ -26,7 +26,8 @@ struct HockeyCard: View {
                     )
 
                 Text(playerName)
-                    .font(.headline)
+                    .font(.title)
+                    .fontWeight(.bold)
                     .padding()
 
                 Text("Stats: \(stats)")
@@ -46,13 +47,11 @@ struct HockeyCard: View {
                 }
             } else {
                 Text(playerName)
-                    .font(.headline)
+                    .font(.title)
+                    .fontWeight(.bold)
                     .padding()
-                    .onTapGesture {
-                        withAnimation {
-                            showDetails.toggle()
-                        }
-                    }
+                    .foregroundColor(Color.white) // Set initial text color
+
             }
         }
         .padding()
@@ -61,6 +60,16 @@ struct HockeyCard: View {
                 showDetails.toggle()
             }
         }
+        .background(
+            ZStack {
+                if !showDetails {
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(LinearGradient(gradient: Gradient(colors: teamColors), startPoint: .leading, endPoint: .trailing))
+                        .frame(height: 200)
+                }
+            }
+        )
+        .cornerRadius(10)
     }
 }
 
@@ -76,6 +85,7 @@ struct PlayerDetailView: View {
             HockeyCard(playerName: playerName, imageName: imageName, teamColors: teamColors, stats: stats, achievements: achievements)
         }
         .navigationTitle(playerName)
+        .font(.title)
     }
 }
 
@@ -96,7 +106,8 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("Hockey Cards")
-            .font(.title3)
+            .font(.title)
+            .foregroundColor(.black)
         }
     }
 }
