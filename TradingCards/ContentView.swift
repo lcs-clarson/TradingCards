@@ -5,7 +5,8 @@ struct Achievement {
     var description: String
 }
 
-struct HockeyCard: View {
+struct HockeyCard: View, Identifiable {
+    var id = UUID() // Add a unique identifier
     var playerName: String
     var imageName: String
     var gradientColors: [Color]
@@ -130,19 +131,18 @@ struct PlayerDetailView: View {
 struct ContentView: View {
     @State private var selectedPlayer: String?
 
+    // Create instances of HockeyCard in an array
+    var hockeyCards: [HockeyCard] = [
+        HockeyCard(playerName: "Alex Ovechkin", imageName: "Image", gradientColors: [.white, .red], stats: "Goals: 700, Assists: 500", achievements: [Achievement(title: "Stanley Cups", description: "3"), Achievement(title: "MVP Awards", description: "5")], selectedPlayer: .constant(nil)),
+        HockeyCard(playerName: "Sidney Crosby", imageName: "Image 2", gradientColors: [.black, .yellow], stats: "Goals: 450, Assists: 600", achievements: [Achievement(title: "Stanley Cups", description: "3"), Achievement(title: "MVP Awards", description: "4")], selectedPlayer: .constant(nil)),
+        HockeyCard(playerName: "Connor McDavid", imageName: "Image 1", gradientColors: [.blue, .orange], stats: "Goals: 300, Assists: 400", achievements: [Achievement(title: "Art Ross Trophies", description: "2"), Achievement(title: "Hart Trophies", description: "1")], selectedPlayer: .constant(nil))
+    ]
+
     var body: some View {
         NavigationView {
-            VStack {
-                NavigationLink(destination: PlayerDetailView(playerName: "Alex Ovechkin", imageName: "Image", gradientColors: [.white, .red], stats: "Goals: 700, Assists: 500", achievements: [Achievement(title: "Stanley Cups", description: "3"), Achievement(title: "MVP Awards", description: "5")])) {
-                    HockeyCard(playerName: "Alex Ovechkin", imageName: "Image", gradientColors: [.white, .red], stats: "Goals: 700, Assists: 500", achievements: [Achievement(title: "Stanley Cups", description: "3"), Achievement(title: "MVP Awards", description: "5")], selectedPlayer: $selectedPlayer)
-                }
-
-                NavigationLink(destination: PlayerDetailView(playerName: "Sidney Crosby", imageName: "Image 2", gradientColors: [.black, .yellow], stats: "Goals: 450, Assists: 600", achievements: [Achievement(title: "Stanley Cups", description: "3"), Achievement(title: "MVP Awards", description: "4")])) {
-                    HockeyCard(playerName: "Sidney Crosby", imageName: "Image 2", gradientColors: [.black, .yellow], stats: "Goals: 450, Assists: 600", achievements: [Achievement(title: "Stanley Cups", description: "3"), Achievement(title: "MVP Awards", description: "4")], selectedPlayer: $selectedPlayer)
-                }
-
-                NavigationLink(destination: PlayerDetailView(playerName: "Connor McDavid", imageName: "Image 1", gradientColors: [.blue, .orange], stats: "Goals: 300, Assists: 400", achievements: [Achievement(title: "Art Ross Trophies", description: "2"), Achievement(title: "Hart Trophies", description: "1")])) {
-                    HockeyCard(playerName: "Connor McDavid", imageName: "Image 1", gradientColors: [.blue, .orange], stats: "Goals: 300, Assists: 400", achievements: [Achievement(title: "Art Ross Trophies", description: "2"), Achievement(title: "Hart Trophies", description: "1")], selectedPlayer: $selectedPlayer)
+            List(hockeyCards) { hockeyCard in
+                NavigationLink(destination: PlayerDetailView(playerName: hockeyCard.playerName, imageName: hockeyCard.imageName, gradientColors: hockeyCard.gradientColors, stats: hockeyCard.stats, achievements: hockeyCard.achievements)) {
+                    hockeyCard
                 }
             }
             .navigationTitle("Hockey Stars")
